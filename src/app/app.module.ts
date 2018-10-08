@@ -1,47 +1,39 @@
 import {BrowserModule} from '@angular/platform-browser';
 import {NgModule} from '@angular/core';
-import {FormsModule} from '@angular/forms';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
-import {
-  MatInputModule,
-  MatCardModule,
-  MatButtonModule,
-  MatToolbarModule,
-  MatExpansionModule,
-  MatProgressSpinnerModule
-} from '@angular/material';
-import {HttpClientModule} from '@angular/common/http';
-
-
-import {PostCreateComponent} from './posts/post-create/post.create.component';
+import {HTTP_INTERCEPTORS, HttpClientModule} from '@angular/common/http';
 import {AppComponent} from './app.component';
-import { HeaderComponent } from './header/header.component';
-import { PostListComponent } from './posts/post-list/post-list.component';
-import {AppRoutingModule} from '../app-routing.module';
+import {HeaderComponent} from './header/header.component';
+import {AppRoutingModule} from './app-routing.module';
+import {AuthInterceptor} from './auth/auth-interceptor';
+import {ErrorInterceptor} from './error-interceptor';
+import {ErrorComponent} from './error/error.component';
+import {AngularMaterialModule} from './angular-material.module';
+import {PostModule} from './posts/post.module';
 
 
 @NgModule({
   declarations: [
     AppComponent,
-    PostCreateComponent,
     HeaderComponent,
-    PostListComponent
+    ErrorComponent,
+
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
-    FormsModule,
     BrowserAnimationsModule,
-    MatInputModule,
-    MatCardModule,
-    MatButtonModule,
-    MatToolbarModule,
     HttpClientModule,
-    MatExpansionModule,
-    MatProgressSpinnerModule
+    PostModule,
+    AngularMaterialModule
+
   ],
-  providers: [],
-  bootstrap: [AppComponent]
+  providers: [
+    {provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true},
+    {provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true}
+  ],
+  bootstrap: [AppComponent],
+  entryComponents: [ErrorComponent]
 })
 export class AppModule {
 }
